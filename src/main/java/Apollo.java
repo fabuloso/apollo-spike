@@ -1,3 +1,4 @@
+import com.mongodb.client.FindIterable;
 import com.spotify.apollo.Environment;
 import com.spotify.apollo.RequestContext;
 import com.spotify.apollo.Response;
@@ -5,15 +6,16 @@ import com.spotify.apollo.httpservice.HttpService;
 import com.spotify.apollo.httpservice.LoadingException;
 import com.spotify.apollo.route.Route;
 import okio.ByteString;
+import org.bson.Document;
 
 public class Apollo {
 
     private static MongoDbRepository repository;
 
     public static void main(String[] args) throws LoadingException {
+        repository = new MongoDbRepository();
+        seed(repository);
         HttpService.boot(Apollo::init, "apollo", args);
-        //repository = new MongoDbRepository();
-        //seed(repository);
     }
 
     static void init(Environment environment) {
@@ -23,8 +25,8 @@ public class Apollo {
     }
 
     private static Response<ByteString> doSomething(RequestContext requestContext) {
-        //repository.findAll();
-        return Response.ok().withPayload(ByteString.encodeUtf8("pong!"));
+        FindIterable<Document> documents = repository.findAll();
+        return Response.ok().withPayload(ByteString.encodeUtf8(documents.first().toJson()));
     }
 
     private static void seed(MongoDbRepository repository) {

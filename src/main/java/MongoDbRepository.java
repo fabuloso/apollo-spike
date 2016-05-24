@@ -11,7 +11,7 @@ public class MongoDbRepository {
     MongoDatabase database;
 
     public MongoDbRepository() {
-        MongoClient client = new MongoClient("mongo" , 27017 );
+        MongoClient client = new MongoClient("mongo" , 27017);
         database = client.getDatabase(DATABASE_NAME);
     }
 
