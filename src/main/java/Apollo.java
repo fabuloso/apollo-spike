@@ -1,4 +1,3 @@
-import com.mongodb.client.FindIterable;
 import com.spotify.apollo.Environment;
 import com.spotify.apollo.RequestContext;
 import com.spotify.apollo.Response;
@@ -6,7 +5,6 @@ import com.spotify.apollo.httpservice.HttpService;
 import com.spotify.apollo.httpservice.LoadingException;
 import com.spotify.apollo.route.Route;
 import okio.ByteString;
-import org.bson.Document;
 
 public class Apollo {
 
@@ -20,13 +18,13 @@ public class Apollo {
 
     static void init(Environment environment) {
         environment.routingEngine()
-                .registerAutoRoute(Route.sync("GET", "/", Apollo::doSomething))
-                .registerAutoRoute(Route.sync("GET", "/hello", context -> "bye"));
+                .registerAutoRoute(Route.sync("GET", "/first-view", Apollo::firstView))
+                .registerAutoRoute(Route.sync("GET", "/ping", context -> "pong"));
     }
 
-    private static Response<ByteString> doSomething(RequestContext requestContext) {
-        FindIterable<Document> documents = repository.findAll();
-        return Response.ok().withPayload(ByteString.encodeUtf8(documents.first().toJson()));
+    private static Response<ByteString> firstView(RequestContext requestContext) {
+        String result = new GetFirstViewCommand(repository).execute();
+        return Response.ok().withPayload(ByteString.encodeUtf8(result));
     }
 
     private static void seed(MongoDbRepository repository) {
