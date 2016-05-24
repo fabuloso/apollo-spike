@@ -3,8 +3,8 @@ Simple Spike with Apollo
 Compile and Run
 ---------------
 
-    $ mvn package
-    $ java -jar target/apollo.jar
+    $ mvn clean package docker:build
+    $ docker-compose up
 
 Try a request:
 
