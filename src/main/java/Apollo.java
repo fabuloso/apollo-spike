@@ -38,6 +38,6 @@ public class Apollo {
     }
 
     private static String jsonFor(int i) {
-        return "{\"foo\":\"1\",\"bar\":{\"baz\":\"" + i + "\"}}";
+        return "{\"title\":\"a title\",\"author\":{\"name\":\"" + "name " + i + "\"}}";
     }
 }
