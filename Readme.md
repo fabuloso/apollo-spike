@@ -9,3 +9,10 @@ Compile and Run
 Try a request:
 
     $ curl http://localhost:8080
+
+
+Todo
+----
+
+Hystrix
+
