@@ -18,7 +18,6 @@ public class GetFirstViewCommand extends HystrixCommand<String> {
         return documents.first().toJson();
     }
 
-
     @Override
     protected String getFallback() {
         return "{}";

@@ -5,5 +5,12 @@ app:
   links:
     - mongo
 
+dashboard:
+  image: mlabouardy/hystrix-dashboard
+  ports:
+    - "9080:9002"
+  links:
+    - app
+
 mongo:
   image: mongo
