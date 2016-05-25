@@ -8,6 +8,7 @@ public class MongoDbRepository {
     public static final String VIEWS = "views";
     public static final String DATABASE_NAME = "spike";
 
+
     MongoDatabase database;
 
     public MongoDbRepository() {

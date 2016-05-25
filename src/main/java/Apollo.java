@@ -5,14 +5,22 @@ import com.spotify.apollo.httpservice.HttpService;
 import com.spotify.apollo.httpservice.LoadingException;
 import com.spotify.apollo.route.Route;
 import okio.ByteString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Apollo {
 
     private static MongoDbRepository repository;
 
+    final static Logger LOG = LoggerFactory.getLogger(Apollo.class);
+
+
     public static void main(String[] args) throws LoadingException {
+        LOG.info("INIT MONGO");
         repository = new MongoDbRepository();
+        LOG.info("SEED MONGO");
         seed(repository);
+        LOG.info("INIT ROUTES");
         HttpService.boot(Apollo::init, "apollo", args);
     }
 
