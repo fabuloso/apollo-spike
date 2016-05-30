@@ -23,7 +23,7 @@ public class GetFirstViewCommand extends HystrixCommand<String> {
 
     @Override
     protected String getFallback() {
-        LOG.info("FALLBACK CALLED");
+        LOG.warn("FALLBACK CALLED");
         return "{}";
     }
 }
