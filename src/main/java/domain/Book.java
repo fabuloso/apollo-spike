@@ -1,6 +1,6 @@
 package domain;
 
-import infrastructure.BookEventStore;
+import infrastructure.EventStore;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -12,21 +12,26 @@ public class Book {
     private List<Event> events = new ArrayList<>();
 
     public Book() {
-        this(new BookEventStore());
+        eventStore = EventStore.getInstance();
     }
 
-    public Book(EventStore eventStore) {
-        this.eventStore = eventStore;
-    }
-
-    public void create(Integer id, String title, Year year) {
-        BookAdded event = new BookAdded(id, title, year);
+    public void create(String title, Year year) {
+        BookAdded event = new BookAdded(title, year);
         eventStore.save(event);
         applyEvent(event);
     }
 
-    private void applyEvent(BookAdded event) {
+    public void rate(String title, Integer stars, String comment) {
+        BookRated event = new BookRated(title, stars, comment);
+        eventStore.save(event);
+        applyEvent(event);
+    }
+
+    private void applyEvent(Event event) {
         events.add(event);
     }
 
+    public void from(List<Event> bookEvents) {
+        bookEvents.forEach(this::applyEvent);
+    }
 }

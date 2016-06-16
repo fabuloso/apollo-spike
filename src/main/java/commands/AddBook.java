@@ -1,24 +1,15 @@
-package actions;
+package commands;
 
 import java.time.Year;
 
 public class AddBook {
 
-    public Integer id;
-    public Year year;
     public String title;
+    public Year year;
 
     public AddBook(String title, String year) {
         this.title = title;
         this.year = Year.parse(year);
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Year getYear() {

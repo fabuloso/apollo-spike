@@ -6,8 +6,7 @@ public class BookAdded extends Event {
     public Year year;
     public String title;
 
-    public BookAdded(Integer id, String title, Year year) {
-        super(id);
+    public BookAdded(String title, Year year) {
         this.title = title;
         this.year = year;
     }

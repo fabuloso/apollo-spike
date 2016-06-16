@@ -1,5 +1,5 @@
-import actions.AddBook;
-import actions.CommandHandler;
+import commands.AddBook;
+import commands.CommandHandler;
 import com.spotify.apollo.Environment;
 import com.spotify.apollo.RequestContext;
 import com.spotify.apollo.Response;
