@@ -8,6 +8,11 @@ public class AddBook {
     public Year year;
     public String title;
 
+    public AddBook(String title, String year) {
+        this.title = title;
+        this.year = Year.parse(year);
+    }
+
     public Integer getId() {
         return id;
     }
