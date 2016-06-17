@@ -1,11 +1,16 @@
-package commands;
+package command;
 
 import domain.Book;
 import domain.BookRepository;
+import domain.InMemoryBookRepository;
 
 public class CommandHandler {
 
     private BookRepository repository;
+
+    public CommandHandler() {
+        this.repository = new InMemoryBookRepository();
+    }
 
     public void handle(AddBook command) {
         Book book = new Book();
@@ -16,7 +21,7 @@ public class CommandHandler {
     public void handle(RateBook rate) {
         Book book = repository.findBy(rate.getTitle());
 
-        book.rate(rate.getTitle(), rate.getStars(), rate.getComment())
+        book.rate(rate.getTitle(), rate.getStars(), rate.getComment()); 
     }
 
 }

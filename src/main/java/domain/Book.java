@@ -1,5 +1,8 @@
 package domain;
 
+import domain.event.BookAdded;
+import domain.event.BookRated;
+import domain.event.Event;
 import infrastructure.EventStore;
 
 import java.time.Year;
@@ -10,6 +13,9 @@ public class Book {
 
     private EventStore eventStore;
     private List<Event> events = new ArrayList<>();
+    private String title;
+    private Year year;
+    private List<Rate> rates = new ArrayList<>();
 
     public Book() {
         eventStore = EventStore.getInstance();
@@ -29,9 +35,23 @@ public class Book {
 
     private void applyEvent(Event event) {
         events.add(event);
+        event.applyOn(this);
     }
 
-    public void from(List<Event> bookEvents) {
+    protected Book from(List<Event> bookEvents) {
         bookEvents.forEach(this::applyEvent);
+        return this;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setYear(Year year) {
+        this.year = year;
+    }
+
+    public void addRate(Integer stars, String comment) {
+        rates.add(new Rate(stars, comment));
     }
 }

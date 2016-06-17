@@ -1,11 +1,11 @@
-package commands;
+package command;
 
 import java.time.Year;
 
 public class AddBook {
 
-    public String title;
-    public Year year;
+    private String title;
+    private Year year;
 
     public AddBook(String title, String year) {
         this.title = title;
@@ -16,15 +16,7 @@ public class AddBook {
         return year;
     }
 
-    public void setYear(Year year) {
-        this.year = year;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }

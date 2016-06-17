@@ -1,19 +1,19 @@
-import commands.AddBook;
-import commands.CommandHandler;
 import com.spotify.apollo.Environment;
 import com.spotify.apollo.RequestContext;
 import com.spotify.apollo.Response;
 import com.spotify.apollo.httpservice.HttpService;
 import com.spotify.apollo.httpservice.LoadingException;
+import command.AddBook;
+import command.CommandHandler;
+import command.RateBook;
 import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-
 import static com.spotify.apollo.Response.ok;
 import static com.spotify.apollo.route.Route.sync;
+import static command.Commands.addBookCommandFrom;
+import static command.Commands.rateBookCommandFrom;
 
 public class Apollo {
 
@@ -36,17 +36,23 @@ public class Apollo {
     static void init(Environment environment) {
         environment.routingEngine()
                 .registerAutoRoute(sync("GET", "/addBook", Apollo::addBook))
-                .registerAutoRoute(sync("GET", "/ping", context -> "pong"));
+                .registerAutoRoute(sync("GET", "/rateBook", Apollo::rateBook));
     }
 
-    private static Response<ByteString> addBook(RequestContext requestContext) {
-        Map<String, List<String>> parameters = requestContext.request().parameters();
+    private static Response<ByteString> rateBook(RequestContext context) {
+        RateBook command = rateBookCommandFrom(context);
 
-        String title = parameters.get("title").get(0);
-        String year = parameters.get("year").get(0);
-        LOG.info("Adding Book -> {} - {}", title, year);
+        LOG.info("Fire command: " + command);
+        commandHandler.handle(command);
 
-        commandHandler.handle(new AddBook(title, year));
+        return ok();
+    }
+
+    private static Response<ByteString> addBook(RequestContext context) {
+        AddBook command = addBookCommandFrom(context);
+
+        LOG.info("Fire command: " + command);
+        commandHandler.handle(command);
 
         return ok();
     }

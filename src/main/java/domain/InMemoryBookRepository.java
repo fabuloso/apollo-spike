@@ -1,16 +1,19 @@
 package domain;
 
-
+import domain.event.Event;
 import infrastructure.EventStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 public class InMemoryBookRepository implements BookRepository {
 
     private final EventStore store;
+
+    final static Logger LOG = LoggerFactory.getLogger(InMemoryBookRepository.class);
 
     public InMemoryBookRepository() {
         store = EventStore.getInstance();
@@ -23,6 +26,9 @@ public class InMemoryBookRepository implements BookRepository {
                 store.getEvents().stream()
                         .filter(e -> e.getTitle().equals(title)).collect(toList());
 
+        LOG.info("Found #{} events for book {}", bookEvents.size(), bookEvents.get(0).getTitle());
+
+        book.setTitle(title);
         return book.from(bookEvents);
     }
 }
