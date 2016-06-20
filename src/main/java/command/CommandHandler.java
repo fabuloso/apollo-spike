@@ -20,8 +20,9 @@ public class CommandHandler {
 
     public void handle(RateBook rate) {
         Book book = repository.findBy(rate.getTitle());
-
-        book.rate(rate.getTitle(), rate.getStars(), rate.getComment()); 
+        if (book != null) {
+            book.rate(rate.getTitle(), rate.getStars(), rate.getComment());
+        }
     }
 
 }

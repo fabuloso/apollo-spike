@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.collections.CollectionUtils.size;
 
 public class InMemoryBookRepository implements BookRepository {
 
@@ -26,9 +28,13 @@ public class InMemoryBookRepository implements BookRepository {
                 store.getEvents().stream()
                         .filter(e -> e.getTitle().equals(title)).collect(toList());
 
-        LOG.info("Found #{} events for book {}", bookEvents.size(), bookEvents.get(0).getTitle());
+        if(isEmpty(bookEvents)) {
+            LOG.info("No events found for the book called: {}", title);
+            return null;
+        }
 
-        book.setTitle(title);
+        LOG.info("Found #{} events for book {}", size(bookEvents), title);
+
         return book.from(bookEvents);
     }
 }
