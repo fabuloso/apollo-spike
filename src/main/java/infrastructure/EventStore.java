@@ -4,6 +4,7 @@ import domain.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jms.JMSException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,11 @@ public class EventStore {
     public void save(Event event) {
         LOG.info("Save Event");
         events.add(event);
+        try {
+            publisher.push(event);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Event> getEvents() {

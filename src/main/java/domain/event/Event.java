@@ -2,7 +2,9 @@ package domain.event;
 
 import domain.Book;
 
-public interface Event {
+import java.io.Serializable;
+
+public interface Event extends Serializable{
 
     String getTitle();
 

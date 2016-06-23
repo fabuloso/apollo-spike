@@ -1,21 +1,23 @@
 app:
-  image: fabuloso/apollo-spike
-  ports:
-    - "8080:8080"
-  links:
-    - mongo
+   image: fabuloso/apollo-spike
+   ports:
+      - "8080:8080"
+   links:
+      - mongo
+      - queue
 
 dashboard:
-  image: mlabouardy/hystrix-dashboard
-  ports:
-    - "9080:9002"
-  links:
-    - app
+   image: mlabouardy/hystrix-dashboard
+   ports:
+     - "9080:9002"
+   links:
+     - app
 
 mongo:
-  image: mongo
+    image: mongo
 
 queue:
-  image: spotify/kafka
-  links:
-    - app
+    image: rmohr/activemq:5.13.3
+    ports:
+      - "61616:61616"
+      - "8161:8161"

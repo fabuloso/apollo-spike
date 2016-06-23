@@ -1,34 +1,33 @@
 package infrastructure;
 
 import domain.event.Event;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
+import javax.jms.*;
 
 public class BookEventPublisher implements EventPublisher {
 
+    final static Logger LOG = LoggerFactory.getLogger(EventStore.class);
+
     @Override
     public void push(Event event) {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("acks", "all");
-        props.put("retries", 0);
-        props.put("batch.size", 16384);
-        props.put("linger.ms", 1);
-        props.put("buffer.memory", 33554432);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        try {
+            LOG.info("Pushing Event on queue");
+            ConnectionFactory factory = new ActiveMQConnectionFactory("tcp://queue:61616");
+            Connection connection = factory.createConnection();
+            connection.start();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue("test");
+            MessageProducer producer = session.createProducer(queue);
+            Message msg = session.createObjectMessage(event);
+            producer.send(queue, msg);
+            LOG.info("Event Pushed");
 
-        Producer<String, String> producer = new KafkaProducer<>(props);
-        for(int i = 0; i < 100; i++) {
-            producer.send(new ProducerRecord<String, String>("my-topic", Integer.toString(i), Integer.toString(i)));
+        } catch (Exception e ) {
+            e.printStackTrace();
         }
-        producer.close();
-
     }
-
-
 
 }
