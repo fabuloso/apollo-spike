@@ -1,9 +1,12 @@
 package domain;
 
 import domain.event.BookAdded;
-import domain.event.BookRated;
+import domain.event.BookLent;
+import domain.event.BookLentBack;
 import domain.event.Event;
 import infrastructure.EventStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -15,7 +18,10 @@ public class Book {
     private List<Event> events = new ArrayList<>();
     private String title;
     private Year year;
-    private List<Rate> rates = new ArrayList<>();
+    private String user;
+    private Boolean lent = false;
+
+    final static Logger LOG = LoggerFactory.getLogger(Book.class);
 
     public Book() {
         eventStore = EventStore.getInstance();
@@ -27,8 +33,19 @@ public class Book {
         applyEvent(event);
     }
 
-    public void rate(String title, Integer stars, String comment) {
-        BookRated event = new BookRated(title, stars, comment);
+    public void lend(String title, String name) {
+        BookLent event = new BookLent(title, name);
+        if (this.isPresent()) {
+            eventStore.save(event);
+            applyEvent(event);
+        } else {
+            LOG.warn("The book is already lent to {}", user);
+        }
+    }
+
+
+    public void lendBack() {
+        BookLentBack event = new BookLentBack(this.title);
         eventStore.save(event);
         applyEvent(event);
     }
@@ -51,7 +68,18 @@ public class Book {
         this.year = year;
     }
 
-    public void addRate(Integer stars, String comment) {
-        rates.add(new Rate(stars, comment));
+    public void lentTo(String name) {
+        this.user = name;
+        this.lent = true;
     }
+
+    public void lentBack() {
+        this.user = "";
+        this.lent = false;
+    }
+
+    public boolean isPresent() {
+        return !lent;
+    }
+
 }

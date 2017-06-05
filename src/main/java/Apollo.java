@@ -5,7 +5,8 @@ import com.spotify.apollo.httpservice.HttpService;
 import com.spotify.apollo.httpservice.LoadingException;
 import command.AddBook;
 import command.CommandHandler;
-import command.RateBook;
+import command.LendBook;
+import command.LendBackBook;
 import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import static com.spotify.apollo.Response.ok;
 import static com.spotify.apollo.route.Route.sync;
 import static command.Commands.addBookCommandFrom;
-import static command.Commands.rateBookCommandFrom;
 
 public class Apollo {
 
@@ -36,13 +36,26 @@ public class Apollo {
     static void init(Environment environment) {
         environment.routingEngine()
                 .registerAutoRoute(sync("GET", "/addBook", Apollo::addBook))
-                .registerAutoRoute(sync("GET", "/rateBook", Apollo::rateBook));
+                .registerAutoRoute(sync("GET", "/lendBook", Apollo::lendBook))
+                .registerAutoRoute(sync("GET", "/lendBackBook", Apollo::lendBackBook));
     }
 
-    private static Response<ByteString> rateBook(RequestContext context) {
-        RateBook command = rateBookCommandFrom(context);
+    private static Response<ByteString> lendBook(RequestContext requestContext) {
+        String name = requestContext.request().parameter("name").get();
+        String title = requestContext.request().parameter("title").get();
 
-        LOG.info("Fire command: " + command);
+        LendBook command = new LendBook(title, name);
+
+        commandHandler.handle(command);
+
+        return ok();
+    }
+
+    private static Response<ByteString> lendBackBook(RequestContext requestContext) {
+        String title = requestContext.request().parameter("title").get();
+
+        LendBackBook command = new LendBackBook(title);
+
         commandHandler.handle(command);
 
         return ok();

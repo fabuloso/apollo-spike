@@ -18,11 +18,14 @@ public class CommandHandler {
         book.create(command.getTitle(), command.getYear());
     }
 
-    public void handle(RateBook rate) {
-        Book book = repository.findBy(rate.getTitle());
-        if (book != null) {
-            book.rate(rate.getTitle(), rate.getStars(), rate.getComment());
-        }
+    public void handle(LendBook command) {
+        Book book = repository.findBy(command.getTitle());
+        book.lend(command.getTitle(), command.getName());
     }
 
+    public void handle(LendBackBook command) {
+        Book book = repository.findBy(command.getTitle());
+
+        book.lendBack();
+    }
 }
