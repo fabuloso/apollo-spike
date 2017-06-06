@@ -5,14 +5,6 @@ app:
    links:
       - mongo
       - queue
-
-dashboard:
-   image: mlabouardy/hystrix-dashboard
-   ports:
-     - "9080:9002"
-   links:
-     - app
-
 mongo:
     image: mongo
 
@@ -21,3 +13,11 @@ queue:
     ports:
       - "61616:61616"
       - "8161:8161"
+
+view:
+    image: fabuloso/view
+    ports:
+      - "8081:8081"
+    links:
+      - queue
+      - mongo
