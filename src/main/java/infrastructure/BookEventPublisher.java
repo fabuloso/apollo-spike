@@ -1,5 +1,6 @@
 package infrastructure;
 
+import com.google.gson.Gson;
 import domain.event.Event;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
@@ -19,13 +20,15 @@ public class BookEventPublisher implements EventPublisher {
             Connection connection = factory.createConnection();
             connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Queue queue = session.createQueue("test");
-            MessageProducer producer = session.createProducer(queue);
-            Message msg = session.createObjectMessage(event);
-            producer.send(queue, msg);
+            Topic topic = session.createTopic("events");
+
+            MessageProducer producer = session.createProducer(topic);
+            TextMessage msg = session.createTextMessage(new Gson().toJson(event));
+            producer.send(msg);
             LOG.info("Event Pushed");
 
         } catch (Exception e ) {
+            LOG.error("An Exception: ", e);
             e.printStackTrace();
         }
     }
